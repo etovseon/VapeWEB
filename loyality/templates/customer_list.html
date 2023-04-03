@@ -1,0 +1,16 @@
+{% block content %}
+<h1>Customer List</h1>
+
+<form method="get" action="{% url 'customer_list' %}">
+    <input type="text" name="q" placeholder="Search customers...">
+    <button type="submit">Search</button>
+</form>
+
+<ul>
+    {% for customer in object_list %}
+    <li>{{ customer.name }} - {{ customer.phone }}</li>
+    {% empty %}
+    <li>No customers found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

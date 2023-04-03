@@ -105,32 +105,26 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="left">
-        <br>
 
+<div class="container">
+
+    <div class="left">
+        <div class="leftCustomer">
         <b>Поиск клиента: </b><input type="text" id="search-inputCustomers" placeholder="Search customers...">
 
+        <br>
+        </div>
         <div id="result"></div>
-        <button>Button 1</button>
+        <button id="myButton2" value="none">Продать</button>
         <button>Button 2</button>
         <button>Button 3</button>
         <button>Button 4</button>
         <button>Button 5</button>
     </div>
 
-<!--    <b>Клиент: </b>-->
-
-s
-a
-<!--        <input type="text" id="search-inputCustomers" placeholder="Search customers...">-->
-
-<!--    </div>-->
     <div class="centerCustomers">
 
-        <b>Клиент: </b>
-<!--        <div id="result"></div>-->
-<!--        <input type="text" id="search-inputCustomers" placeholder="Search customers...">-->
+
         {% for item in customers %}
         <div class="resultCustomer">
             <h3>{{ item.name }}</h3>
@@ -149,17 +143,21 @@ a
                   var phone = data.phone;
                   var total = data.total_amount;
                   document.getElementById("result").innerHTML = "ФИО: " + name + "<br>Телефон: " + phone + "<br>Потратил: " + total + "грн<br>";
+                  document.getElementById("myButton2").value = data.id;
                 }
                 };
                 xhttp.open("GET", "/cust/?buttonValue=" + buttonValue, true);
                 xhttp.send();
               });
+
             </script>
         </div>
         {% empty %}
         <p>No items found.</p>
         {% endfor %}
     </div>
+<p>Корзина</p>
+<ul id="output"></ul>
     <div class="center">
         <input type="text" id="search-input" placeholder="Search...">
     </div>
@@ -169,25 +167,34 @@ a
             <h3>{{ item.name }}</h3>
             <p>{{ item.price }}</p>
             <p>{{ item.id }}</p>
-            <button onclick="sendToBackend('{{ item.id }}')">Send ID to Backend</button>
+            <button id="{{item.id}}" onclick="sendToBackend('{{ item.id }}')">Send ID to Backend</button>
             <button>Button 2</button>
             <button>Button 3</button>
         </div>
         {% empty %}
         <p>No items found.</p>
         {% endfor %}
-    </div>
-</div>
-<script>
+        <script>
+
+
+              document.getElementById("myButton2").addEventListener("click", function() {
+                var buttonValue = document.getElementById("myButton2").value;
+                var xhttp = new XMLHttpRequest();
+
+                xhttp.open("GET", "/custLeft/?buttonValue=" + buttonValue, true);
+                xhttp.send();
+              });
+
 
     const searchInput = document.querySelector('#search-input');
     const resultsContainer = document.querySelector('.right');
 
     searchInput.addEventListener('input', () => {
         const searchQuery = searchInput.value.trim().toLowerCase();
-        console.log(searchQuery)
         const results = Array.from(resultsContainer.children);
+        console.log(results)
         results.forEach(result => {
+
             const name = result.querySelector('h3').textContent.trim().toLowerCase();
             const price = result.querySelector('p').textContent.trim().toLowerCase();
             const keywords = name + ' ' + price;
@@ -203,6 +210,7 @@ a
     const searchInputCustomers = document.querySelector('#search-inputCustomers');
     const resultsContainerCustomers = document.querySelector('.centerCustomers');
 
+
     searchInputCustomers.addEventListener('input', () => {
         const searchQuery = searchInputCustomers.value.trim().toLowerCase();
         const resultsCustomers = Array.from(resultsContainerCustomers.children);
@@ -217,6 +225,8 @@ a
             }
         });
     });
+
+
 
     function sendToBackend(itemId) {
         const xhr = new XMLHttpRequest();
@@ -241,7 +251,95 @@ a
         };
         xhr.send(JSON.stringify({'customer_id': itemId}));
     }
+
+
+</script>
+<script>
+		// Создаем переменную для хранения данных нажатых кнопок
+		var buttonClicks = {};
+
+		// Получаем элементы всех кнопок в блоке "result"
+		var buttons = document.querySelectorAll('.result button');
+
+		// Для каждой кнопки вешаем обработчик события на клик
+		buttons.forEach(function(button) {
+			button.addEventListener('click', function() {
+				// Получаем текст кнопки
+				var buttonText = button.id;
+
+				// Если кнопка уже нажималась, увеличиваем счетчик
+				if (buttonClicks[buttonText]) {
+					buttonClicks[buttonText] += 1;
+				} else {
+					// Иначе создаем новую запись в словаре
+					buttonClicks[buttonText] = 1;
+				}
+
+				// Выводим текущее состояние переменной на страницу
+				showButtonClicks();
+			});
+		});
+
+		// Функция для отображения текущего состояния переменной на странице
+		function showButtonClicks() {
+			// Получаем список и очищаем его
+			var list = document.getElementById('output');
+			list.innerHTML = '';
+
+			// Для каждой записи в словаре создаем новый элемент списка
+			for (var button in buttonClicks) {
+				var li = document.createElement('li');
+
+				// Добавляем текст записи
+				var text = document.createTextNode(button + ': ' + buttonClicks[button] + ' ');
+				li.appendChild(text);
+
+				// Добавляем кнопку "отнять"
+				var minusButton = document.createElement('button');
+				minusButton.textContent = 'Отнять';
+				minusButton.dataset.buttonText = button;
+				minusButton.addEventListener('click', function() {
+					// Получаем текст кнопки, для которой была нажата кнопка "отнять"
+					var buttonText = this.dataset.buttonText;
+
+					// Если значение больше 0, уменьшаем его на 1
+					if (buttonClicks[buttonText] > 0) {
+						buttonClicks[buttonText] -= 1;
+
+						// Выводим обновленное значение на страницу
+						showButtonClicks();
+					} else {
+						// Иначе удаляем запись из словаря
+						delete buttonClicks[buttonText];
+
+						// Выводим обновленное значение на страницу
+						showButtonClicks();
+					}
+				});
+				li.appendChild(minusButton);
+
+				// Добавляем элемент списка на страницу
+				list.appendChild(li);
+			}
+		}
 </script>
 
+
+
+    </div>
+</div>
+
+
 </body>
+<script>
+  // получаем все кнопки в блоке class="result"
+  const resultButtons = document.querySelectorAll('.result button');
+  // добавляем обработчик событий onclick для каждой кнопки
+  resultButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      console.log('Клик по кнопке с id', button.id);
+      // здесь можно добавить дополнительный код для обработки клика на кнопке
+    });
+  });
+</script>
 </html>

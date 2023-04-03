@@ -1,0 +1,17 @@
+{% block content %}
+<h1>Product List</h1>
+
+<form method="get" action="{% url 'product_list' %}">
+    <input type="text" name="q" placeholder="Search products...">
+    <button type="submit">Search</button>
+</form>
+
+<ul>
+    {% for product in object_list %}
+<!--    <li>{{ product.name }} - {{ product.phone }} - ${{ product.price }}</li>-->
+    <li>sadas {{ product.name }} - {{ product.phone }}</li>
+    {% empty %}
+    <li>No products found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
