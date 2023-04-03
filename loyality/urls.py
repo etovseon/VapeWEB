@@ -11,6 +11,9 @@ urlpatterns = [
     path('customers/', CustomerListView.as_view(), name='customer_list'),
     path('products/', ProductListView.as_view(), name='product_list'),
     path('mu-model-list/', MyModelListView.as_view(), name='my_model_list'),
+    #path('customerOrderAPI/', customerOrderAPI, name='customerOrder_API'),
+    #path('api/my-endpoint/', MyModelListView.as_view(), name='my_model_list'),
+
 
 ]
 # urlpatterns = format_suffix_patterns(urlpatterns)

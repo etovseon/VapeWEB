@@ -92,3 +92,10 @@ def api_delete(**kwargs):
                 'value': None,
                 'msg': 'Not found'
             }
+
+def api_customerOrder(request,**kwargs):
+    print('*'*50)
+    print(request.body.decode('utf-8'))
+    print('*' * 50)
+    response = 'all good'
+    return Response(response, status=201)

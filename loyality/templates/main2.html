@@ -116,12 +116,39 @@
         </div>
         <div id="result"></div>
         <button id="myButton2" value="none">Продать</button>
-        <button>Button 2</button>
+        <button onclick="getcube()">Button 2</button>
         <button>Button 3</button>
         <button>Button 4</button>
         <button>Button 5</button>
     </div>
+<script>
+    function getcube(){
+        var number=document.getElementById("myButton2").value;
+        var myOrder=document.getElementById("output");
+        console.log(myOrder)
+        alert(myOrder.textContent);
 
+        fetch('api/customerOrderAPI/', { // URL адрес и настройки запроса (замените на свой)
+          method: 'POST', // метод запроса (POST, GET и т.д.)
+          body: JSON.stringify({ data: myOrder.textContent }), // данные для отправки (кодируем в формат JSON)
+          headers: {
+            'Content-Type': 'application/json' // тип содержимого - JSON
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Response received', data); // выводим ответ сервера в консоль
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+}
+</script>
     <div class="centerCustomers">
 
 
@@ -177,6 +204,8 @@
         <script>
 
 
+
+
               document.getElementById("myButton2").addEventListener("click", function() {
                 var buttonValue = document.getElementById("myButton2").value;
                 var xhttp = new XMLHttpRequest();
@@ -230,7 +259,7 @@
 
     function sendToBackend(itemId) {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/get-id/', true);
+        xhr.open('POST', '/get-id1/', true);
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
@@ -331,15 +360,4 @@
 
 
 </body>
-<script>
-  // получаем все кнопки в блоке class="result"
-  const resultButtons = document.querySelectorAll('.result button');
-  // добавляем обработчик событий onclick для каждой кнопки
-  resultButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      console.log('Клик по кнопке с id', button.id);
-      // здесь можно добавить дополнительный код для обработки клика на кнопке
-    });
-  });
-</script>
 </html>

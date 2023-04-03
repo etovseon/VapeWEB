@@ -37,3 +37,12 @@ def manage_item(request, *args, **kwargs):
         return api_put(request, **kwargs)
     elif request.method == 'DELETE':
         return api_delete(**kwargs)
+
+
+@csrf_exempt
+@api_view(['POST','GET'])
+def customerOrderAPI(request, *args, **kwargs):
+    print(request)
+    if request.method == 'POST':
+        print('asdasdsad')
+        return api_customerOrder(request, **kwargs)
