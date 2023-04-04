@@ -117,7 +117,7 @@
         <div id="result"></div>
         <button id="myButton2" onclick="getcube()" value="none">Продать</button>
         <button onclick="getcube()">Button 2</button>
-        <button id="buttonsclear_all">buttonsclear_all</button>
+        <button>Button 3</button>
         <button>Button 4</button>
         <button>Button 5</button>
     </div>
@@ -197,7 +197,7 @@
             <h3>{{ item.name }}</h3>
             <p>{{ item.price }}</p>
             <p>{{ item.id }}</p>
-            <button id="{{item.id}}">Send ID to Backend</button>
+            <button id="{{item.id}}" onclick="sendToBackend('{{ item.id }}')">Send ID to Backend</button>
 <!--            <button>Button 2</button>-->
 <!--            <button>Button 3</button>-->
         </div>
@@ -259,18 +259,18 @@
     });
 
 
-
-<!--    function sendToBackend(itemId) {-->
-<!--        const xhr = new XMLHttpRequest();-->
-<!--        xhr.open('POST', '/add-order/', true);-->
-<!--        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');-->
-<!--        xhr.onreadystatechange = function() {-->
-<!--            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {-->
-<!--                console.log('ID sent to backend:', itemId);-->
-<!--            }-->
-<!--        };-->
-<!--        xhr.send(JSON.stringify({'id': itemId}));-->
-<!--    }-->
+// кнопки для отсылки нажатия на кнопку товара по апи отсылка на бек в базу редис
+    function sendToBackend(itemId) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/add-order/', true);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log('ID sent to backend:', itemId);
+            }
+        };
+        xhr.send(JSON.stringify({'id': itemId}));
+    }
 
     function getCustomer(itemId) {
         const xhr = new XMLHttpRequest();
@@ -284,33 +284,14 @@
         xhr.send(JSON.stringify({'customer_id': itemId}));
     }
 
+
 </script>
 <script>
 		// Создаем переменную для хранения данных нажатых кнопок
 		var buttonClicks = {};
 
 		// Получаем элементы всех кнопок в блоке "result"
-	    var buttons = document.querySelectorAll('.result button');
-
-        // по нажатию на кнопку "продать" отправляет данные с 2х переменых по апи и очищает переменные
-	    myButtonAfterSendClearList = document.getElementById('myButton2')
-
-	    document.getElementById("myButton2").addEventListener("click", function() {
-	    document.getElementById("myButton2").value = ''
-	    })
-
-	    document.getElementById("myButton2").addEventListener("click", function() {
-	    document.getElementById("result").innerHTML = ''
-	    })
-
-
-
-	    myButtonAfterSendClearList.addEventListener('click', function() {
-	    buttonClicks = {}
-	    showButtonClicks();
-
-	    })
-
+		var buttons = document.querySelectorAll('.result button');
 
 		// Для каждой кнопки вешаем обработчик события на клик
 		buttons.forEach(function(button) {
@@ -321,7 +302,6 @@
 				// Если кнопка уже нажималась, увеличиваем счетчик
 				if (buttonClicks[buttonText]) {
 					buttonClicks[buttonText] += 1;
-
 				} else {
 					// Иначе создаем новую запись в словаре
 					buttonClicks[buttonText] = 1;
@@ -374,8 +354,7 @@
 				list.appendChild(li);
 			}
 		}
-
-        </script>
+</script>
 
 
 

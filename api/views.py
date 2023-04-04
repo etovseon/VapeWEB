@@ -42,7 +42,5 @@ def manage_item(request, *args, **kwargs):
 @csrf_exempt
 @api_view(['POST','GET'])
 def customerOrderAPI(request, *args, **kwargs):
-    print(request)
     if request.method == 'POST':
-        print('asdasdsad')
         return api_customerOrder(request, **kwargs)

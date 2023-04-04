@@ -17,14 +17,19 @@ def addIDByPost(request):
                                            port=settings.REDIS_PORT, db=0)
 
         item = json.loads(request.body)
-        key = list(item.keys())[0]
-        value = item[key]
-        print(value)
+        print('addIDByPost')
+        print(f'{item=}')
+        print(f'data: {item["data"]}\n idCustomer: {item["idCustomer"]}\n')
+        key = str(item['idCustomer'])
+        value = str(item['data'])
+        # key = list(item.keys())[0]
+        # value = item[key]
+        # print(value)
         redis_instance.set(key, value)
         response = {
             'msg': f"{key} successfully set to {value}"
         }
-        print(response)
+        # print(response)
         return JsonResponse({'result': 'success'})
     else:
         return JsonResponse({'result': 'error'})
@@ -62,7 +67,7 @@ def main(request):
 @csrf_exempt
 def custLeft(request):
     button_value = request.GET.get('buttonValue')
-    print('button2: ',button_value)
+    print('button2: ', button_value)
     return JsonResponse(button_value, safe=False)
 
 

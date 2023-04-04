@@ -92,10 +92,21 @@ def api_delete(**kwargs):
                 'value': None,
                 'msg': 'Not found'
             }
+            return Response(response, status=201)
 
-def api_customerOrder(request,**kwargs):
-    print('*'*50)
-    print(request.body.decode('utf-8'))
-    print('*' * 50)
-    response = 'all good'
+
+def decorFuncName(func):
+    def wrapper(*args, **kwargs):
+        print('*'*30)
+        print(f' • Response func: [{func.__name__}]')
+        return func(*args, **kwargs)
+    return wrapper
+
+@decorFuncName
+def api_customerOrder(request):
+    result = request.body.decode('utf-8')
+    result = json.loads(result)
+    print(f"Order items: {result['data']}")
+    print(f"CustomerID: {result['idCustomer']}")
+    response = 'ok'
     return Response(response, status=201)
